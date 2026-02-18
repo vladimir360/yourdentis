@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YourDentis — Sistema de Gestión Odontológica</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;1,9..144,300&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --teal: #0a9396;
+  --teal-dark: #005f73;
+  --teal-light: #94d2bd;
+  --cream: #f8f4f0;
+  --white: #ffffff;
+  --charcoal: #1a1a2e;
+  --mid: #4a5568;
+  --soft: #e2e8f0;
+  --accent: #ee9b00;
+  --accent2: #ca6702;
+  --danger: #e63946;
+  --success: #2d9748;
+  --bg: #f0f4f8;
+  --card: #ffffff;
+  --sidebar-w: 260px;
+  --radius: 16px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.08);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.12);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'DM Sans', sans-serif; background:var(--bg); color:var(--charcoal); min-height:100vh; display:flex; overflow-x:hidden; }
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--charcoal);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  left: 0; top: 0;
+  z-index: 100;
+  transition: transform 0.3s;
+}
+.sidebar-logo {
+  padding: 28px 24px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.logo-text {
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--teal-light);
+  letter-spacing: -0.5px;
+}
+.logo-text span { color: var(--accent); }
+.logo-sub { font-size: 10px; color: rgba(255,255,255,0.4); letter-spacing: 2px; text-transform: uppercase; margin-top: 2px; }
+
+.sidebar-nav { padding: 16px 0; flex: 1; overflow-y: auto; }
+.nav-section { padding: 8px 20px 4px; font-size: 9px; color: rgba(255,255,255,0.3); letter-spacing: 2px; text-transform: uppercase; margin-top: 8px; }
+.nav-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 20px;
+  color: rgba(255,255,255,0.6);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 14px;
+  font-weight: 400;
+  border-left: 3px solid transparent;
+  margin: 1px 0;
+}
+.nav-item:hover { background: rgba(255,255,255,0.05); color: white; }
+.nav-item.active { background: rgba(10,147,150,0.15); color: var(--teal-light); border-left-color: var(--teal); }
+.nav-icon { font-size: 18px; width: 22px; text-align: center; }
+.nav-badge { margin-left: auto; background: var(--accent); color: white; font-size: 10px; padding: 2px 7px; border-radius: 20px; font-weight: 600; }
+
+.sidebar-footer { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.08); }
+.user-info { display: flex; align-items: center; gap: 10px; }
+.user-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--teal), var(--teal-dark)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 13px; }
+.user-name { font-size: 13px; font-weight: 500; color: white; }
+.user-role { font-size: 11px; color: rgba(255,255,255,0.4); }
+
+/* ===== MAIN ===== */
+.main { margin-left: var(--sidebar-w); flex: 1; min-height: 100vh; }
+.topbar {
+  background: white;
+  padding: 0 32px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--soft);
+  position: sticky; top: 0; z-index: 50;
+  box-shadow: 0 1px 8px rgba(0,0,0,0.04);
+}
+.topbar-left { display: flex; align-items: center; gap: 16px; }
+.page-title { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600; color: var(--charcoal); }
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+.search-box {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--bg); border: 1px solid var(--soft);
+  border-radius: 10px; padding: 8px 14px;
+  font-size: 13px; color: var(--mid); width: 240px;
+}
+.search-box input { background: none; border: none; outline: none; font-size: 13px; color: var(--charcoal); width: 100%; font-family: 'DM Sans', sans-serif; }
+.btn { padding: 9px 18px; border-radius: 10px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
+.btn-primary { background: var(--teal); color: white; }
+.btn-primary:hover { background: var(--teal-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(10,147,150,0.3); }
+.btn-outline { background: transparent; border: 1.5px solid var(--soft); color: var(--mid); }
+.btn-outline:hover { border-color: var(--teal); color: var(--teal); }
+.btn-accent { background: var(--accent); color: white; }
+.btn-danger { background: var(--danger); color: white; }
+.btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 8px; }
+.icon-btn { width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--soft); background: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; transition: all 0.2s; }
+.icon-btn:hover { background: var(--bg); }
+.notif-dot { position: relative; }
+.notif-dot::after { content:''; position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; background: var(--danger); border-radius: 50%; border: 2px solid white; }
+
+/* ===== CONTENT ===== */
+.content { padding: 28px 32px; }
+.page { display: none; }
+.page.active { display: block; animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: translateY(0); } }
+
+/* ===== CARDS ===== */
+.card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 24px; }
+.card-title { font-family: 'Fraunces', serif; font-size: 16px; font-weight: 600; color: var(--charcoal); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 20px; margin-bottom: 24px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+
+/* ===== STAT CARDS ===== */
+.stat-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 22px;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s;
+}
+.stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.stat-card::before { content:''; position: absolute; top: -30px; right: -30px; width: 100px; height: 100px; border-radius: 50%; opacity: 0.08; }
+.stat-card.teal::before { background: var(--teal); }
+.stat-card.accent::before { background: var(--accent); }
+.stat-card.danger::before { background: var(--danger); }
+.stat-card.success::before { background: var(--success); }
+.stat-icon { font-size: 28px; margin-bottom: 12px; }
+.stat-value { font-family: 'Fraunces', serif; font-size: 32px; font-weight: 700; color: var(--charcoal); line-height: 1; }
+.stat-label { font-size: 12px; color: var(--mid); margin-top: 4px; }
+.stat-change { font-size: 11px; margin-top: 8px; font-weight: 500; }
+.stat-change.up { color: var(--success); }
+.stat-change.down { color: var(--danger); }
+
+/* ===== TABLES ===== */
+table { width: 100%; border-collapse: collapse; }
+th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--mid); padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--soft); }
+td { padding: 13px 14px; font-size: 13px; border-bottom: 1px solid rgba(0,0,0,0.04); vertical-align: middle; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(10,147,150,0.03); }
+.avatar { width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, var(--teal-light), var(--teal)); display: inline-flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 12px; margin-right: 8px; flex-shrink: 0; }
+.patient-cell { display: flex; align-items: center; }
+
+/* ===== BADGES ===== */
+.badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+.badge-success { background: #d4edda; color: #155724; }
+.badge-warning { background: #fff3cd; color: #856404; }
+.badge-danger { background: #f8d7da; color: #721c24; }
+.badge-info { background: #d1ecf1; color: #0c5460; }
+.badge-teal { background: rgba(10,147,150,0.12); color: var(--teal-dark); }
+
+/* ===== FORM ===== */
+.form-group { margin-bottom: 16px; }
+.form-label { font-size: 12px; font-weight: 500; color: var(--mid); margin-bottom: 6px; display: block; text-transform: uppercase; letter-spacing: 0.5px; }
+.form-control {
+  width: 100%; padding: 10px 14px;
+  border: 1.5px solid var(--soft);
+  border-radius: 10px; font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--charcoal);
+  background: white;
+  transition: border-color 0.2s;
+  outline: none;
+}
+.form-control:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(10,147,150,0.1); }
+select.form-control { cursor: pointer; }
+
+/* ===== MODAL ===== */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; display: none; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+.modal-overlay.open { display: flex; animation: fadeIn 0.2s; }
+.modal { background: white; border-radius: 20px; padding: 32px; width: 560px; max-width: 90vw; max-height: 85vh; overflow-y: auto; box-shadow: var(--shadow-lg); }
+.modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+.modal-title { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600; }
+.modal-close { background: var(--bg); border: none; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
+.modal-footer { display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--soft); }
+
+/* ===== TABS ===== */
+.tabs { display: flex; gap: 4px; background: var(--bg); padding: 4px; border-radius: 12px; margin-bottom: 24px; }
+.tab { padding: 8px 18px; border-radius: 9px; font-size: 13px; font-weight: 500; cursor: pointer; color: var(--mid); transition: all 0.2s; border: none; background: none; font-family: 'DM Sans', sans-serif; }
+.tab.active { background: white; color: var(--teal-dark); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* ===== CALENDAR ===== */
+.calendar-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 2px; }
+.cal-header { text-align: center; font-size: 11px; font-weight: 600; color: var(--mid); padding: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+.cal-day { min-height: 88px; background: white; border-radius: 8px; padding: 6px; cursor: pointer; transition: all 0.15s; border: 1.5px solid transparent; }
+.cal-day:hover { border-color: var(--teal-light); background: rgba(10,147,150,0.03); }
+.cal-day.today { border-color: var(--teal); background: rgba(10,147,150,0.05); }
+.cal-day.other-month { opacity: 0.4; }
+.cal-day-num { font-size: 13px; font-weight: 500; margin-bottom: 4px; color: var(--charcoal); }
+.cal-day.today .cal-day-num { background: var(--teal); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+.cal-event { background: var(--teal); color: white; border-radius: 4px; padding: 2px 6px; font-size: 10px; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cal-event.orange { background: var(--accent2); }
+.cal-event.green { background: var(--success); }
+
+/* ===== DENTAL CHART ===== */
+.dental-chart { background: white; border-radius: var(--radius); padding: 24px; }
+.dental-row { display: flex; justify-content: center; gap: 3px; margin: 8px 0; }
+.tooth {
+  width: 36px; height: 46px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  cursor: pointer;
+  border-radius: 8px;
+  border: 2px solid var(--soft);
+  transition: all 0.15s;
+  background: white;
+  position: relative;
+}
+.tooth:hover { border-color: var(--teal); transform: scale(1.05); }
+.tooth.healthy { background: white; border-color: #c8e6c9; }
+.tooth.caries { background: #fff3cd; border-color: var(--accent); }
+.tooth.treated { background: #d1ecf1; border-color: var(--teal); }
+.tooth.absent { background: #f8d7da; border-color: var(--danger); opacity: 0.6; }
+.tooth.crown { background: #e8d5f5; border-color: #9c27b0; }
+.tooth svg { width: 20px; height: 24px; }
+.tooth-num { font-size: 8px; color: var(--mid); position: absolute; bottom: 2px; }
+.dental-divider { display: flex; align-items: center; justify-content: center; gap: 12px; margin: 6px 0; }
+.dental-divider-line { flex: 1; height: 1px; background: var(--soft); max-width: 240px; }
+.dental-divider-text { font-size: 10px; color: var(--mid); text-transform: uppercase; letter-spacing: 1px; }
+.tooth-legend { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--soft); }
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--mid); }
+.legend-dot { width: 12px; height: 12px; border-radius: 3px; border: 1.5px solid; }
+
+/* ===== PAYMENT PLAN ===== */
+.payment-bar { background: var(--bg); border-radius: 12px; overflow: hidden; height: 8px; margin: 8px 0; }
+.payment-fill { height: 100%; background: linear-gradient(90deg, var(--teal), var(--teal-light)); border-radius: 12px; transition: width 0.5s; }
+.cuota-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--soft); }
+.cuota-row:last-child { border-bottom: none; }
+.cuota-num { width: 28px; height: 28px; border-radius: 50%; background: var(--teal); color: white; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
+.cuota-num.paid { background: var(--success); }
+.cuota-num.late { background: var(--danger); }
+.cuota-num.pending { background: var(--soft); color: var(--mid); }
+
+/* ===== TIMELINE ===== */
+.timeline { position: relative; padding-left: 24px; }
+.timeline::before { content:''; position: absolute; left: 7px; top: 0; bottom: 0; width: 2px; background: var(--soft); }
+.timeline-item { position: relative; margin-bottom: 20px; }
+.timeline-item::before { content:''; position: absolute; left: -21px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: var(--teal); border: 2px solid white; box-shadow: 0 0 0 3px rgba(10,147,150,0.2); }
+.timeline-date { font-size: 11px; color: var(--mid); margin-bottom: 4px; }
+.timeline-content { background: var(--bg); border-radius: 10px; padding: 12px 14px; font-size: 13px; }
+.timeline-title { font-weight: 600; margin-bottom: 2px; }
+
+/* ===== CHART BARS ===== */
+.chart-bars { display: flex; align-items: flex-end; gap: 8px; height: 120px; padding: 0 8px; }
+.bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; height: 100%; justify-content: flex-end; }
+.bar { width: 100%; border-radius: 6px 6px 0 0; background: var(--teal); transition: height 0.5s; min-height: 4px; }
+.bar.accent { background: var(--accent); }
+.bar-label { font-size: 10px; color: var(--mid); }
+
+/* ===== PROGRESS RING ===== */
+.progress-ring { position: relative; width: 80px; height: 80px; }
+.progress-ring svg { transform: rotate(-90deg); }
+.progress-ring-text { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-size: 16px; font-weight: 700; color: var(--teal-dark); }
+
+/* ===== NOTIFICATIONS / CHAT ===== */
+.chat-list { height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding-right: 4px; }
+.chat-msg { display: flex; gap: 10px; }
+.chat-msg.own { flex-direction: row-reverse; }
+.chat-bubble { background: var(--bg); border-radius: 12px 12px 12px 2px; padding: 10px 14px; font-size: 13px; max-width: 75%; }
+.chat-msg.own .chat-bubble { background: var(--teal); color: white; border-radius: 12px 12px 2px 12px; }
+.chat-time { font-size: 10px; color: var(--mid); margin-top: 4px; }
+.chat-input-row { display: flex; gap: 8px; margin-top: 12px; }
+.chat-input { flex: 1; padding: 10px 14px; border: 1.5px solid var(--soft); border-radius: 10px; font-size: 13px; outline: none; font-family: 'DM Sans', sans-serif; }
+.chat-input:focus { border-color: var(--teal); }
+
+/* ===== PATIENT PORTAL ===== */
+.portal-header { background: linear-gradient(135deg, var(--teal-dark), var(--teal)); border-radius: var(--radius); padding: 32px; color: white; margin-bottom: 24px; position: relative; overflow: hidden; }
+.portal-header::after { content:'🦷'; position: absolute; right: 24px; top: 16px; font-size: 80px; opacity: 0.15; }
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:768px) {
+  .sidebar { transform: translateX(-100%); }
+  .main { margin-left: 0; }
+  .grid-4 { grid-template-columns: 1fr 1fr; }
+  .grid-3 { grid-template-columns: 1fr; }
+  .content { padding: 16px; }
+}
+
+/* ===== SCROLL ===== */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--soft); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--teal-light); }
+
+/* ===== SECTION HEADER ===== */
+.section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.section-title { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 600; }
+.section-subtitle { font-size: 13px; color: var(--mid); margin-top: 2px; }
+
+.pill { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+
+/* ===== TOOTH SVG ICONS ===== */
+.tooth-icon { font-size: 16px; line-height: 1; }
+
+/* ===== UPCOMING APPOINTMENTS ===== */
+.appt-item { display: flex; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--soft); }
+.appt-item:last-child { border-bottom: none; }
+.appt-time { text-align: center; min-width: 50px; }
+.appt-time-hour { font-family: 'Fraunces', serif; font-size: 16px; font-weight: 700; color: var(--teal-dark); line-height: 1; }
+.appt-time-min { font-size: 11px; color: var(--mid); }
+.appt-bar { width: 3px; height: 40px; border-radius: 3px; background: var(--teal); }
+.appt-bar.orange { background: var(--accent); }
+.appt-info { flex: 1; }
+.appt-patient { font-size: 14px; font-weight: 500; }
+.appt-type { font-size: 12px; color: var(--mid); }
+.appt-dr { font-size: 11px; color: var(--teal); margin-top: 2px; }
+
+/* doctor card */
+.dr-card { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--bg); border-radius: 12px; margin-bottom: 8px; }
+.dr-avatar { width: 42px; height: 42px; border-radius: 12px; background: linear-gradient(135deg, var(--teal-dark), var(--teal)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 14px; }
+.dr-info { flex: 1; }
+.dr-name { font-size: 13px; font-weight: 600; }
+.dr-specialty { font-size: 11px; color: var(--mid); }
+.dr-status { width: 8px; height: 8px; border-radius: 50%; background: var(--success); }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-text">Your<span>Dentis</span></div>
+    <div class="logo-sub">Sistema Odontológico</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">Principal</div>
+    <div class="nav-item active" onclick="navigate('dashboard', this)">
+      <span class="nav-icon">📊</span> Dashboard
+    </div>
+    <div class="nav-item" onclick="navigate('pacientes', this)">
+      <span class="nav-icon">👥</span> Pacientes
+    </div>
+    <div class="nav-item" onclick="navigate('agenda', this)">
+      <span class="nav-icon">📅</span> Agenda / Citas
+      <span class="nav-badge">5</span>
+    </div>
+
+    <div class="nav-section">Clínica</div>
+    <div class="nav-item" onclick="navigate('dental', this)">
+      <span class="nav-icon">🦷</span> Diagrama Dental
+    </div>
+    <div class="nav-item" onclick="navigate('historial', this)">
+      <span class="nav-icon">📋</span> Historia Clínica
+    </div>
+    <div class="nav-item" onclick="navigate('tratamientos', this)">
+      <span class="nav-icon">⚕️</span> Tratamientos
+    </div>
+
+    <div class="nav-section">Finanzas</div>
+    <div class="nav-item" onclick="navigate('facturacion', this)">
+      <span class="nav-icon">💳</span> Facturación
+    </div>
+    <div class="nav-item" onclick="navigate('pagos', this)">
+      <span class="nav-icon">💰</span> Pagos & Cuotas
+    </div>
+
+    <div class="nav-section">Analytics</div>
+    <div class="nav-item" onclick="navigate('reportes', this)">
+      <span class="nav-icon">📈</span> Reportes
+    </div>
+
+    <div class="nav-section">Comunicación</div>
+    <div class="nav-item" onclick="navigate('chat', this)">
+      <span class="nav-icon">💬</span> Chat Interno
+      <span class="nav-badge">3</span>
+    </div>
+
+    <div class="nav-section">Portal</div>
+    <div class="nav-item" onclick="navigate('portal', this)">
+      <span class="nav-icon">🌐</span> Portal Paciente
+    </div>
+    <div class="nav-item" onclick="navigate('configuracion', this)">
+      <span class="nav-icon">⚙️</span> Configuración
+    </div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="user-info">
+      <div class="user-avatar">DR</div>
+      <div>
+        <div class="user-name">Dr. Ramírez</div>
+        <div class="user-role">Administrador</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="page-title" id="page-title">Dashboard</div>
+    </div>
+    <div class="topbar-right">
+      <div class="search-box">
+        <span>🔍</span>
+        <input type="text" placeholder="Buscar paciente, cita...">
+      </div>
+      <button class="icon-btn notif-dot">🔔</button>
+      <button class="icon-btn">👤</button>
+      <button class="btn btn-primary" onclick="openModal('modal-nueva-cita')">+ Nueva Cita</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ===== DASHBOARD ===== -->
+    <div id="page-dashboard" class="page active">
+      <div class="grid-4">
+        <div class="stat-card teal">
+          <div class="stat-icon">👥</div>
+          <div class="stat-value">1,284</div>
+          <div class="stat-label">Pacientes activos</div>
+          <div class="stat-change up">↑ +18 este mes</div>
+        </div>
+        <div class="stat-card accent">
+          <div class="stat-icon">📅</div>
+          <div class="stat-value">42</div>
+          <div class="stat-label">Citas hoy</div>
+          <div class="stat-change up">↑ 8 pendientes</div>
+        </div>
+        <div class="stat-card success">
+          <div class="stat-icon">💰</div>
+          <div class="stat-value">$38.5k</div>
+          <div class="stat-label">Ingresos (mes)</div>
+          <div class="stat-change up">↑ +12% vs anterior</div>
+        </div>
+        <div class="stat-card danger">
+          <div class="stat-icon">⚠️</div>
+          <div class="stat-value">$7.2k</div>
+          <div class="stat-label">Cuentas por cobrar</div>
+          <div class="stat-change down">↓ 23 pacientes</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <!-- Citas de hoy -->
+        <div class="card">
+          <div class="card-title">📅 Citas de Hoy — 17 Feb</div>
+          <div class="appt-item">
+            <div class="appt-time"><div class="appt-time-hour">8:30</div><div class="appt-time-min">AM</div></div>
+            <div class="appt-bar"></div>
+            <div class="appt-info"><div class="appt-patient">María González</div><div class="appt-type">Limpieza dental + blanqueamiento</div><div class="appt-dr">Dr. Ramírez — Sala 1</div></div>
+            <span class="badge badge-success">Confirmada</span>
+          </div>
+          <div class="appt-item">
+            <div class="appt-time"><div class="appt-time-hour">9:15</div><div class="appt-time-min">AM</div></div>
+            <div class="appt-bar orange"></div>
+            <div class="appt-info"><div class="appt-patient">Carlos Mendoza</div><div class="appt-type">Extracción molar #38</div><div class="appt-dr">Dra. López — Sala 2</div></div>
+            <span class="badge badge-warning">En espera</span>
+          </div>
+          <div class="appt-item">
+            <div class="appt-time"><div class="appt-time-hour">10:00</div><div class="appt-time-min">AM</div></div>
+            <div class="appt-bar"></div>
+            <div class="appt-info"><div class="appt-patient">Ana Rodríguez</div><div class="appt-type">Ortodoncia — 1ª revisión</div><div class="appt-dr">Dr. Ramírez — Sala 1</div></div>
+            <span class="badge badge-info">Programada</span>
+          </div>
+          <div class="appt-item">
+            <div class="appt-time"><div class="appt-time-hour">11:30</div><div class="appt-time-min">AM</div></div>
+            <div class="appt-bar orange"></div>
+            <div class="appt-info"><div class="appt-patient">Luis Fernández</div><div class="appt-type">Endodoncia — continuación</div><div class="appt-dr">Dra. López — Sala 3</div></div>
+            <span class="badge badge-success">Confirmada</span>
+          </div>
+          <div class="appt-item">
+            <div class="appt-time"><div class="appt-time-hour">2:00</div><div class="appt-time-min">PM</div></div>
+            <div class="appt-bar"></div>
+            <div class="appt-info"><div class="appt-patient">Sara Jiménez</div><div class="appt-type">Primera consulta</div><div class="appt-dr">Dr. Ramírez — Sala 1</div></div>
+            <span class="badge badge-danger">Sin confirmar</span>
+          </div>
+        </div>
+
+        <!-- Ingresos del mes -->
+        <div class="card">
+          <div class="card-title">📈 Ingresos — últimos 7 días</div>
+          <div class="chart-bars" style="margin-bottom:8px">
+            <div class="bar-wrap"><div class="bar" style="height:55%"></div><div class="bar-label">L</div></div>
+            <div class="bar-wrap"><div class="bar" style="height:70%"></div><div class="bar-label">M</div></div>
+            <div class="bar-wrap"><div class="bar" style="height:45%"></div><div class="bar-label">Mi</div></div>
+            <div class="bar-wrap"><div class="bar accent" style="height:90%"></div><div class="bar-label">J</div></div>
+            <div class="bar-wrap"><div class="bar" style="height:65%"></div><div class="bar-label">V</div></div>
+            <div class="bar-wrap"><div class="bar" style="height:30%"></div><div class="bar-label">S</div></div>
+            <div class="bar-wrap"><div class="bar" style="height:20%"></div><div class="bar-label">D</div></div>
+          </div>
+          <div style="display:flex;gap:20px;margin-top:16px">
+            <div><div style="font-size:11px;color:var(--mid)">Mejor día</div><div style="font-weight:700;color:var(--accent)">Jueves $6,200</div></div>
+            <div><div style="font-size:11px;color:var(--mid)">Promedio diario</div><div style="font-weight:700">$3,450</div></div>
+            <div><div style="font-size:11px;color:var(--mid)">Total semana</div><div style="font-weight:700;color:var(--teal)">$24,150</div></div>
+          </div>
+          <div style="margin-top:20px">
+            <div class="card-title">🩺 Doctores activos hoy</div>
+            <div class="dr-card"><div class="dr-avatar">JR</div><div class="dr-info"><div class="dr-name">Dr. Juan Ramírez</div><div class="dr-specialty">Odontología General</div></div><div class="dr-status"></div></div>
+            <div class="dr-card"><div class="dr-avatar">AL</div><div class="dr-info"><div class="dr-name">Dra. Ana López</div><div class="dr-specialty">Endodoncia</div></div><div class="dr-status"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PACIENTES ===== -->
+    <div id="page-pacientes" class="page">
+      <div class="section-header">
+        <div><div class="section-title">Gestión de Pacientes</div><div class="section-subtitle">1,284 pacientes registrados</div></div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-outline btn-sm">⬆ Exportar</button>
+          <button class="btn btn-primary" onclick="openModal('modal-nuevo-paciente')">+ Nuevo Paciente</button>
+        </div>
+      </div>
+      <div class="card">
+        <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap">
+          <div class="search-box" style="flex:1;min-width:200px"><span>🔍</span><input type="text" placeholder="Buscar por nombre, cédula, teléfono..."></div>
+          <select class="form-control" style="width:auto"><option>Todos los estados</option><option>Activos</option><option>Inactivos</option></select>
+          <select class="form-control" style="width:auto"><option>Todos los doctores</option><option>Dr. Ramírez</option><option>Dra. López</option></select>
+        </div>
+        <table>
+          <thead><tr><th>Paciente</th><th>Cédula</th><th>Teléfono</th><th>Último tratamiento</th><th>Próxima cita</th><th>Estado</th><th>Acciones</th></tr></thead>
+          <tbody>
+            <tr onclick="navigate('historial',null)" style="cursor:pointer">
+              <td><div class="patient-cell"><div class="avatar">MG</div><div><div style="font-weight:500">María González</div><div style="font-size:11px;color:var(--mid)">32 años · F</div></div></div></td>
+              <td>001-2345678-9</td><td>(809) 555-1234</td>
+              <td>Blanqueamiento dental</td><td>20 Feb 2026</td>
+              <td><span class="badge badge-success">Activo</span></td>
+              <td><button class="btn btn-outline btn-sm">Ver</button></td>
+            </tr>
+            <tr>
+              <td><div class="patient-cell"><div class="avatar" style="background:linear-gradient(135deg,var(--accent),var(--accent2))">CM</div><div><div style="font-weight:500">Carlos Mendoza</div><div style="font-size:11px;color:var(--mid)">45 años · M</div></div></div></td>
+              <td>002-3456789-0</td><td>(809) 555-5678</td>
+              <td>Extracción molar</td><td>—</td>
+              <td><span class="badge badge-warning">Seguimiento</span></td>
+              <td><button class="btn btn-outline btn-sm">Ver</button></td>
+            </tr>
+            <tr>
+              <td><div class="patient-cell"><div class="avatar" style="background:linear-gradient(135deg,#667eea,#764ba2)">AR</div><div><div style="font-weight:500">Ana Rodríguez</div><div style="font-size:11px;color:var(--mid)">28 años · F</div></div></div></td>
+              <td>003-4567890-1</td><td>(809) 555-9012</td>
+              <td>Ortodoncia — mes 3</td><td>17 Feb 2026</td>
+              <td><span class="badge badge-teal">En tratamiento</span></td>
+              <td><button class="btn btn-outline btn-sm">Ver</button></td>
+            </tr>
+            <tr>
+              <td><div class="patient-cell"><div class="avatar" style="background:linear-gradient(135deg,#f093fb,#f5576c)">LF</div><div><div style="font-weight:500">Luis Fernández</div><div style="font-size:11px;color:var(--mid)">38 años · M</div></div></div></td>
+              <td>004-5678901-2</td><td>(809) 555-3456</td>
+              <td>Endodoncia molar</td><td>24 Feb 2026</td>
+              <td><span class="badge badge-teal">En tratamiento</span></td>
+              <td><button class="btn btn-outline btn-sm">Ver</button></td>
+            </tr>
+            <tr>
+              <td><div class="patient-cell"><div class="avatar" style="background:linear-gradient(135deg,#4facfe,#00f2fe)">SJ</div><div><div style="font-weight:500">Sara Jiménez</div><div style="font-size:11px;color:var(--mid)">22 años · F</div></div></div></td>
+              <td>005-6789012-3</td><td>(809) 555-7890</td>
+              <td>Primera consulta</td><td>17 Feb 2026</td>
+              <td><span class="badge badge-info">Nuevo</span></td>
+              <td><button class="btn btn-outline btn-sm">Ver</button></td>
+            </tr>
+          </tbody>
+        </table>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px;padding-top:16px;border-top:1px solid var(--soft)">
+          <div style="font-size:12px;color:var(--mid)">Mostrando 1-5 de 1,284 pacientes</div>
+          <div style="display:flex;gap:4px">
+            <button class="btn btn-outline btn-sm">‹ Anterior</button>
+            <button class="btn btn-primary btn-sm">1</button>
+            <button class="btn btn-outline btn-sm">2</button>
+            <button class="btn btn-outline btn-sm">3</button>
+            <button class="btn btn-outline btn-sm">Siguiente ›</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== AGENDA ===== -->
+    <div id="page-agenda" class="page">
+      <div class="section-header">
+        <div><div class="section-title">Agenda y Calendario</div><div class="section-subtitle">Febrero 2026</div></div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="btn btn-outline btn-sm">‹</button>
+          <button class="btn btn-outline btn-sm">Hoy</button>
+          <button class="btn btn-outline btn-sm">›</button>
+          <div class="tabs" style="margin-bottom:0;background:var(--bg)">
+            <button class="tab active" style="font-size:12px">Mes</button>
+            <button class="tab" style="font-size:12px">Semana</button>
+            <button class="tab" style="font-size:12px">Día</button>
+          </div>
+          <button class="btn btn-primary" onclick="openModal('modal-nueva-cita')">+ Cita</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="calendar-grid">
+          <div class="cal-header">Lun</div><div class="cal-header">Mar</div><div class="cal-header">Mié</div>
+          <div class="cal-header">Jue</div><div class="cal-header">Vie</div><div class="cal-header">Sáb</div><div class="cal-header">Dom</div>
+
+          <div class="cal-day other-month"><div class="cal-day-num">26</div></div>
+          <div class="cal-day other-month"><div class="cal-day-num">27</div></div>
+          <div class="cal-day other-month"><div class="cal-day-num">28</div></div>
+          <div class="cal-day other-month"><div class="cal-day-num">29</div></div>
+          <div class="cal-day other-month"><div class="cal-day-num">30</div></div>
+          <div class="cal-day other-month"><div class="cal-day-num">31</div></div>
+          <div class="cal-day"><div class="cal-day-num">1</div></div>
+
+          <div class="cal-day"><div class="cal-day-num">2</div></div>
+          <div class="cal-day"><div class="cal-day-num">3</div><div class="cal-event">M. González 9am</div></div>
+          <div class="cal-day"><div class="cal-day-num">4</div></div>
+          <div class="cal-day"><div class="cal-day-num">5</div><div class="cal-event orange">C. Mendoza</div><div class="cal-event">A. Rodríguez</div></div>
+          <div class="cal-day"><div class="cal-day-num">6</div></div>
+          <div class="cal-day"><div class="cal-day-num">7</div></div>
+          <div class="cal-day"><div class="cal-day-num">8</div></div>
+
+          <div class="cal-day"><div class="cal-day-num">9</div><div class="cal-event">L. Fernández</div></div>
+          <div class="cal-day"><div class="cal-day-num">10</div></div>
+          <div class="cal-day"><div class="cal-day-num">11</div><div class="cal-event orange">S. Jiménez</div></div>
+          <div class="cal-day"><div class="cal-day-num">12</div></div>
+          <div class="cal-day"><div class="cal-day-num">13</div><div class="cal-event green">3 citas</div></div>
+          <div class="cal-day"><div class="cal-day-num">14</div></div>
+          <div class="cal-day"><div class="cal-day-num">15</div></div>
+
+          <div class="cal-day"><div class="cal-day-num">16</div><div class="cal-event">M. González</div></div>
+          <div class="cal-day today"><div class="cal-day-num">17</div><div class="cal-event">5 citas hoy</div></div>
+          <div class="cal-day"><div class="cal-day-num">18</div></div>
+          <div class="cal-day"><div class="cal-day-num">19</div><div class="cal-event orange">L. Fernández</div></div>
+          <div class="cal-day"><div class="cal-day-num">20</div><div class="cal-event">M. González</div><div class="cal-event green">A. Rodríguez</div></div>
+          <div class="cal-day"><div class="cal-day-num">21</div></div>
+          <div class="cal-day"><div class="cal-day-num">22</div></div>
+
+          <div class="cal-day"><div class="cal-day-num">23</div></div>
+          <div class="cal-day"><div class="cal-day-num">24</div><div class="cal-event">L. Fernández</div></div>
+          <div class="cal-day"><div class="cal-day-num">25</div></div>
+          <div class="cal-day"><div class="cal-day-num">26</div><div class="cal-event orange">Múltiples</div></div>
+          <div class="cal-day"><div class="cal-day-num">27</div></div>
+          <div class="cal-day"><div class="cal-day-num">28</div></div>
+          <div class="cal-day other-month"><div class="cal-day-num">1</div></div>
+        </div>
+        <div style="display:flex;gap:16px;margin-top:16px;padding-top:16px;border-top:1px solid var(--soft);font-size:12px">
+          <span>🟦 Odontología General</span>
+          <span>🟧 Endodoncia</span>
+          <span>🟩 Ortodoncia</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== DENTAL ===== -->
+    <div id="page-dental" class="page">
+      <div class="section-header">
+        <div><div class="section-title">Diagrama Dental Interactivo</div><div class="section-subtitle">Paciente: María González · Clic en cada diente para editar</div></div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-outline btn-sm">🖨 Imprimir</button>
+          <button class="btn btn-outline btn-sm">📥 Exportar PDF</button>
+          <button class="btn btn-primary btn-sm">💾 Guardar</button>
+        </div>
+      </div>
+      <div class="grid-2" style="align-items:start">
+        <div class="dental-chart">
+          <div style="text-align:center;font-size:12px;color:var(--mid);margin-bottom:12px;text-transform:uppercase;letter-spacing:1px">Dientes Superiores (Maxilar)</div>
+          <div class="dental-row" id="upper-teeth"></div>
+          <div class="dental-divider">
+            <div class="dental-divider-line"></div>
+            <div class="dental-divider-text">Línea media</div>
+            <div class="dental-divider-line"></div>
+          </div>
+          <div class="dental-row" id="lower-teeth"></div>
+          <div style="text-align:center;font-size:12px;color:var(--mid);margin-top:12px;text-transform:uppercase;letter-spacing:1px">Dientes Inferiores (Mandíbula)</div>
+          <div class="tooth-legend">
+            <div class="legend-item"><div class="legend-dot" style="background:#fff;border-color:#c8e6c9"></div> Sano</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#fff3cd;border-color:var(--accent)"></div> Caries</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#d1ecf1;border-color:var(--teal)"></div> Tratado</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#f8d7da;border-color:var(--danger)"></div> Ausente</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#e8d5f5;border-color:#9c27b0"></div> Corona</div>
+          </div>
+        </div>
+        <div>
+          <div class="card" style="margin-bottom:16px" id="tooth-info">
+            <div class="card-title">🦷 Información del Diente</div>
+            <div style="text-align:center;padding:20px;color:var(--mid)">
+              <div style="font-size:48px">🦷</div>
+              <div style="margin-top:8px">Selecciona un diente para ver su información</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📝 Notas de la sesión</div>
+            <textarea class="form-control" style="height:100px;resize:none" placeholder="Ingresa observaciones clínicas de esta sesión..."></textarea>
+            <div style="display:flex;gap:8px;margin-top:10px">
+              <button class="btn btn-primary btn-sm" style="flex:1">Guardar nota</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== HISTORIAL ===== -->
+    <div id="page-historial" class="page">
+      <div class="section-header">
+        <div><div class="section-title">Historia Clínica</div><div class="section-subtitle">María González · Exp. #00124</div></div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-outline btn-sm">🖨 Imprimir ficha</button>
+          <button class="btn btn-primary btn-sm">+ Nueva consulta</button>
+        </div>
+      </div>
+      <div class="portal-header" style="margin-bottom:20px">
+        <div style="display:flex;align-items:center;gap:20px">
+          <div style="width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700">MG</div>
+          <div>
+            <div style="font-family:Fraunces,serif;font-size:24px;font-weight:700">María González</div>
+            <div style="opacity:0.8;margin-top:4px">32 años · F · Tipo O+ · Sin alergias</div>
+            <div style="opacity:0.7;font-size:12px;margin-top:4px">📞 (809) 555-1234 · ✉ maria@email.com · 📍 Santo Domingo</div>
+          </div>
+          <div style="margin-left:auto;text-align:right">
+            <div style="font-size:12px;opacity:0.7">Paciente desde</div>
+            <div style="font-family:Fraunces,serif;font-size:20px;font-weight:700">Ene 2024</div>
+            <div style="font-size:12px;opacity:0.7">12 visitas totales</div>
+          </div>
+        </div>
+      </div>
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab(this,'tab-historial')">📋 Historial</button>
+        <button class="tab" onclick="switchTab(this,'tab-odontograma')">🦷 Odontograma</button>
+        <button class="tab" onclick="switchTab(this,'tab-archivos')">📎 Archivos</button>
+        <button class="tab" onclick="switchTab(this,'tab-pagos-paciente')">💳 Pagos</button>
+      </div>
+      <div id="tab-historial" class="tab-content active">
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">🕐 Línea de tiempo clínica</div>
+            <div class="timeline">
+              <div class="timeline-item">
+                <div class="timeline-date">17 Feb 2026 — Dr. Ramírez</div>
+                <div class="timeline-content"><div class="timeline-title">Blanqueamiento dental</div>Aplicación de gel H2O2 al 35%. Resultado excelente. Paciente sin molestias.</div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-date">20 Ene 2026 — Dr. Ramírez</div>
+                <div class="timeline-content"><div class="timeline-title">Limpieza profunda + raspaje</div>Periodontitis leve zona posterior. Instrucciones de higiene impartidas.</div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-date">5 Nov 2025 — Dra. López</div>
+                <div class="timeline-content"><div class="timeline-title">Obturación diente #16</div>Caries clase II. Resina composite A2. Sin complicaciones.</div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-date">14 Mar 2025 — Dr. Ramírez</div>
+                <div class="timeline-content"><div class="timeline-title">Primera consulta + diagnóstico</div>Evaluación completa. Plan de tratamiento elaborado.</div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="card" style="margin-bottom:16px">
+              <div class="card-title">📋 Antecedentes médicos</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:13px">
+                <div><div style="font-size:10px;color:var(--mid);text-transform:uppercase;letter-spacing:0.5px">Diabetes</div><div style="font-weight:500">No</div></div>
+                <div><div style="font-size:10px;color:var(--mid);text-transform:uppercase;letter-spacing:0.5px">Hipertensión</div><div style="font-weight:500">No</div></div>
+                <div><div style="font-size:10px;color:var(--mid);text-transform:uppercase;letter-spacing:0.5px">Medicamentos</div><div style="font-weight:500">Ninguno</div></div>
+                <div><div style="font-size:10px;color:var(--mid);text-transform:uppercase;letter-spacing:0.5px">Alergias</div><div style="font-weight:500">Ninguna conocida</div></div>
+                <div><div style="font-size:10px;color:var(--mid);text-transform:uppercase;letter-spacing:0.5px">Embarazo</div><div style="font-weight:500">No</div></div>
+                <div><div style="font-size:10px;color:var(--mid);text-transform:uppercase;letter-spacing:0.5px">Fumadora</div><div style="font-weight:500">No</div></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">⚕️ Tratamientos activos</div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--soft)">
+                <div><div style="font-weight:500;font-size:13px">Blanqueamiento dental</div><div style="font-size:11px;color:var(--mid)">Sesión 2 de 3 · Dr. Ramírez</div></div>
+                <span class="badge badge-teal">Activo</span>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0">
+                <div><div style="font-weight:500;font-size:13px">Control periodontal</div><div style="font-size:11px;color:var(--mid)">Revisión trimestral</div></div>
+                <span class="badge badge-info">Programa</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="tab-odontograma" class="tab-content"></div>
+      <div id="tab-archivos" class="tab-content">
+        <div class="card">
+          <div class="card-title">📎 Archivos adjuntos</div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+            <div style="background:var(--bg);border-radius:10px;padding:16px;text-align:center;cursor:pointer">
+              <div style="font-size:32px">🦴</div>
+              <div style="font-size:12px;margin-top:6px;font-weight:500">Rx Panorámica</div>
+              <div style="font-size:10px;color:var(--mid)">Jan 2026</div>
+            </div>
+            <div style="background:var(--bg);border-radius:10px;padding:16px;text-align:center;cursor:pointer">
+              <div style="font-size:32px">📸</div>
+              <div style="font-size:12px;margin-top:6px;font-weight:500">Foto intraoral</div>
+              <div style="font-size:10px;color:var(--mid)">Nov 2025</div>
+            </div>
+            <div style="background:var(--bg);border-radius:10px;padding:16px;text-align:center;cursor:pointer">
+              <div style="font-size:32px">📄</div>
+              <div style="font-size:12px;margin-top:6px;font-weight:500">Consentimiento</div>
+              <div style="font-size:10px;color:var(--mid)">Mar 2025</div>
+            </div>
+            <div style="background:var(--bg);border-radius:10px;padding:16px;text-align:center;cursor:pointer;border:2px dashed var(--soft)">
+              <div style="font-size:32px">➕</div>
+              <div style="font-size:12px;margin-top:6px;color:var(--mid)">Subir archivo</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="tab-pagos-paciente" class="tab-content"></div>
+    </div>
+
+    <!-- ===== FACTURACION ===== -->
+    <div id="page-facturacion" class="page">
+      <div class="section-header">
+        <div><div class="section-title">Facturación</div><div class="section-subtitle">Gestión de facturas y recibos</div></div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-outline btn-sm">⬆ Exportar</button>
+          <button class="btn btn-primary">+ Nueva Factura</button>
+        </div>
+      </div>
+      <div class="grid-3" style="margin-bottom:24px">
+        <div class="stat-card teal"><div class="stat-icon">💵</div><div class="stat-value">$38.5k</div><div class="stat-label">Ingresos del mes</div></div>
+        <div class="stat-card accent"><div class="stat-icon">⏳</div><div class="stat-value">$7.2k</div><div class="stat-label">Pendiente de cobro</div></div>
+        <div class="stat-card success"><div class="stat-icon">✅</div><div class="stat-value">$31.3k</div><div class="stat-label">Cobrado este mes</div></div>
+      </div>
+      <div class="card">
+        <table>
+          <thead><tr><th>Factura</th><th>Paciente</th><th>Tratamiento</th><th>Fecha</th><th>Total</th><th>Estado</th><th>Acciones</th></tr></thead>
+          <tbody>
+            <tr><td><strong>#F-2026-042</strong></td><td>María González</td><td>Blanqueamiento</td><td>17 Feb 2026</td><td><strong>$3,500</strong></td><td><span class="badge badge-success">Pagada</span></td><td><button class="btn btn-outline btn-sm">🖨 PDF</button></td></tr>
+            <tr><td><strong>#F-2026-041</strong></td><td>Carlos Mendoza</td><td>Extracción molar</td><td>17 Feb 2026</td><td><strong>$2,800</strong></td><td><span class="badge badge-warning">Cuotas</span></td><td><button class="btn btn-outline btn-sm">🖨 PDF</button></td></tr>
+            <tr><td><strong>#F-2026-040</strong></td><td>Ana Rodríguez</td><td>Ortodoncia mes 3</td><td>16 Feb 2026</td><td><strong>$8,000</strong></td><td><span class="badge badge-teal">Plan activo</span></td><td><button class="btn btn-outline btn-sm">🖨 PDF</button></td></tr>
+            <tr><td><strong>#F-2026-039</strong></td><td>Luis Fernández</td><td>Endodoncia</td><td>15 Feb 2026</td><td><strong>$5,500</strong></td><td><span class="badge badge-danger">Vencida</span></td><td><button class="btn btn-outline btn-sm">🖨 PDF</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ===== PAGOS ===== -->
+    <div id="page-pagos" class="page">
+      <div class="section-header">
+        <div><div class="section-title">Pagos y Cuotas</div><div class="section-subtitle">Planes de pago activos</div></div>
+        <button class="btn btn-primary">+ Nuevo Plan de Pago</button>
+      </div>
+      <div class="grid-2">
+        <!-- Plan de pagos - Ortodoncia -->
+        <div class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+            <div>
+              <div style="font-weight:700;font-size:15px">Ana Rodríguez</div>
+              <div style="font-size:12px;color:var(--mid)">Ortodoncia completa · 18 meses</div>
+            </div>
+            <span class="badge badge-teal">Activo</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px">
+            <span style="color:var(--mid)">Total tratamiento</span><span style="font-weight:700">$48,000</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px">
+            <span style="color:var(--mid)">Pagado</span><span style="font-weight:700;color:var(--success)">$16,000</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:12px">
+            <span style="color:var(--mid)">Saldo pendiente</span><span style="font-weight:700;color:var(--danger)">$32,000</span>
+          </div>
+          <div class="payment-bar"><div class="payment-fill" style="width:33%"></div></div>
+          <div style="font-size:11px;color:var(--mid);text-align:right;margin-bottom:16px">33% completado · Cuota 3 de 9 pagadas</div>
+          <div>
+            <div class="cuota-row"><div style="display:flex;align-items:center;gap:10px"><div class="cuota-num paid">1</div><div><div style="font-size:13px;font-weight:500">Cuota 1 · $5,334</div><div style="font-size:11px;color:var(--mid)">Dic 2025</div></div></div><span class="badge badge-success">✓ Pagada</span></div>
+            <div class="cuota-row"><div style="display:flex;align-items:center;gap:10px"><div class="cuota-num paid">2</div><div><div style="font-size:13px;font-weight:500">Cuota 2 · $5,333</div><div style="font-size:11px;color:var(--mid)">Ene 2026</div></div></div><span class="badge badge-success">✓ Pagada</span></div>
+            <div class="cuota-row"><div style="display:flex;align-items:center;gap:10px"><div class="cuota-num paid">3</div><div><div style="font-size:13px;font-weight:500">Cuota 3 · $5,333</div><div style="font-size:11px;color:var(--mid)">Feb 2026</div></div></div><span class="badge badge-success">✓ Pagada</span></div>
+            <div class="cuota-row"><div style="display:flex;align-items:center;gap:10px"><div class="cuota-num">4</div><div><div style="font-size:13px;font-weight:500">Cuota 4 · $5,333</div><div style="font-size:11px;color:var(--mid)">Mar 2026 · próxima</div></div></div><span class="badge badge-warning">Pendiente</span></div>
+            <div class="cuota-row"><div style="display:flex;align-items:center;gap:10px"><div class="cuota-num pending">5</div><div><div style="font-size:13px;font-weight:500">Cuotas 5-9</div><div style="font-size:11px;color:var(--mid)">Abr — Ago 2026</div></div></div><span class="badge" style="background:var(--soft);color:var(--mid)">Futuras</span></div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:16px">
+            <button class="btn btn-primary btn-sm" style="flex:1">💳 Registrar pago</button>
+            <button class="btn btn-outline btn-sm">📋 Ver detalle</button>
+          </div>
+        </div>
+        <!-- Plan de pagos - Endodoncia -->
+        <div class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+            <div>
+              <div style="font-weight:700;font-size:15px">Luis Fernández</div>
+              <div style="font-size:12px;color:var(--mid)">Endodoncia + Corona · 4 meses</div>
+            </div>
+            <span class="badge badge-danger">Cuota vencida</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px">
+            <span style="color:var(--mid)">Total tratamiento</span><span style="font-weight:700">$12,000</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px">
+            <span style="color:var(--mid)">Pagado</span><span style="font-weight:700;color:var(--success)">$3,000</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:12px">
+            <span style="color:var(--mid)">Saldo pendiente</span><span style="font-weight:700;color:var(--danger)">$9,000</span>
+          </div>
+          <div class="payment-bar"><div class="payment-fill" style="width:25%;background:linear-gradient(90deg,var(--accent),var(--accent2))"></div></div>
+          <div style="font-size:11px;color:var(--mid);text-align:right;margin-bottom:16px">25% completado · Cuota 1 de 4 pagadas</div>
+          <div>
+            <div class="cuota-row"><div style="display:flex;align-items:center;gap:10px"><div class="cuota-num paid">1</div><div><div style="font-size:13px;font-weight:500">Cuota 1 · $3,000</div><div style="font-size:11px;color:var(--mid)">Dic 2025</div></div></div><span class="badge badge-success">✓ Pagada</span></div>
+            <div class="cuota-row"><div style="display:flex;align-items:center;gap:10px"><div class="cuota-num late">2</div><div><div style="font-size:13px;font-weight:500">Cuota 2 · $3,000</div><div style="font-size:11px;color:var(--danger)">Ene 2026 · VENCIDA</div></div></div><span class="badge badge-danger">Vencida</span></div>
+            <div class="cuota-row"><div style="display:flex;align-items:center;gap:10px"><div class="cuota-num pending">3</div><div><div style="font-size:13px;font-weight:500">Cuota 3 · $3,000</div><div style="font-size:11px;color:var(--mid)">Feb 2026</div></div></div><span class="badge badge-warning">Próxima</span></div>
+            <div class="cuota-row"><div style="display:flex;align-items:center;gap:10px"><div class="cuota-num pending">4</div><div><div style="font-size:13px;font-weight:500">Cuota 4 · $3,000</div><div style="font-size:11px;color:var(--mid)">Mar 2026</div></div></div><span class="badge" style="background:var(--soft);color:var(--mid)">Futura</span></div>
+          </div>
+          <div style="background:#fff3cd;border-radius:10px;padding:10px 14px;font-size:12px;margin-top:12px;color:#856404">
+            ⚠️ Cuota 2 vencida hace 17 días. Se enviará recordatorio automático por WhatsApp y email.
+          </div>
+          <div style="display:flex;gap:8px;margin-top:12px">
+            <button class="btn btn-primary btn-sm" style="flex:1">💳 Registrar pago</button>
+            <button class="btn btn-outline btn-sm">📱 Enviar recordatorio</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== REPORTES ===== -->
+    <div id="page-reportes" class="page">
+      <div class="section-header">
+        <div><div class="section-title">Reportes y Analíticas</div><div class="section-subtitle">Febrero 2026</div></div>
+        <div style="display:flex;gap:8px">
+          <select class="form-control btn-sm" style="width:auto"><option>Mes actual</option><option>Último trimestre</option><option>Año</option></select>
+          <button class="btn btn-primary btn-sm">⬇ Exportar reporte</button>
+        </div>
+      </div>
+      <div class="grid-4" style="margin-bottom:24px">
+        <div class="stat-card teal"><div class="stat-icon">👤</div><div class="stat-value">48</div><div class="stat-label">Nuevos pacientes</div><div class="stat-change up">↑ +12%</div></div>
+        <div class="stat-card accent"><div class="stat-icon">📅</div><div class="stat-value">312</div><div class="stat-label">Citas atendidas</div><div class="stat-change up">↑ +8%</div></div>
+        <div class="stat-card success"><div class="stat-icon">✅</div><div class="stat-value">89%</div><div class="stat-label">Tasa de asistencia</div><div class="stat-change up">↑ +3%</div></div>
+        <div class="stat-card danger"><div class="stat-icon">❌</div><div class="stat-value">34</div><div class="stat-label">No presentados</div><div class="stat-change down">↓ mismo período</div></div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">💊 Procedimientos más frecuentes</div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span>Limpieza dental</span><span style="font-weight:700">87 casos · 28%</span></div><div class="payment-bar"><div class="payment-fill" style="width:87%"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span>Restauraciones/Obturaciones</span><span style="font-weight:700">64 casos · 21%</span></div><div class="payment-bar"><div class="payment-fill" style="width:64%;background:linear-gradient(90deg,var(--accent),var(--accent2))"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span>Extracciones</span><span style="font-weight:700">41 casos · 13%</span></div><div class="payment-bar"><div class="payment-fill" style="width:41%;background:linear-gradient(90deg,var(--danger),#ff6b6b)"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span>Blanqueamiento</span><span style="font-weight:700">38 casos · 12%</span></div><div class="payment-bar"><div class="payment-fill" style="width:38%;background:linear-gradient(90deg,#667eea,#764ba2)"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span>Ortodoncia</span><span style="font-weight:700">22 casos · 7%</span></div><div class="payment-bar"><div class="payment-fill" style="width:22%;background:linear-gradient(90deg,var(--success),#56ab2f)"></div></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">💰 Ingresos por doctor</div>
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <div style="display:flex;align-items:center;gap:14px">
+              <div class="dr-avatar">JR</div>
+              <div style="flex:1">
+                <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span style="font-weight:500">Dr. Ramírez</span><span style="font-weight:700;color:var(--teal)">$22,400</span></div>
+                <div class="payment-bar"><div class="payment-fill" style="width:78%"></div></div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px">
+              <div class="dr-avatar">AL</div>
+              <div style="flex:1">
+                <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span style="font-weight:500">Dra. López</span><span style="font-weight:700;color:var(--accent)">$16,100</span></div>
+                <div class="payment-bar"><div class="payment-fill" style="width:56%;background:linear-gradient(90deg,var(--accent),var(--accent2))"></div></div>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:20px">
+            <div class="card-title" style="font-size:14px">🤖 Insights IA</div>
+            <div style="background:rgba(10,147,150,0.06);border-radius:10px;padding:12px;font-size:12px;line-height:1.6;border-left:3px solid var(--teal)">
+              💡 <strong>12 pacientes</strong> no han asistido en +6 meses. Se recomienda campaña de reactivación por WhatsApp.<br><br>
+              📊 Los martes tienen <strong>22% más cancelaciones</strong>. Considera reducir citas ese día.<br><br>
+              ⭐ El <strong>blanqueamiento</strong> es el servicio con mayor margen. Se sugiere promoverlo más en campañas.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== CHAT ===== -->
+    <div id="page-chat" class="page">
+      <div class="section-header">
+        <div><div class="section-title">Chat Interno</div><div class="section-subtitle">Comunicación del equipo</div></div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;color:var(--mid)">Canales</div>
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(10,147,150,0.08);border-radius:10px;cursor:pointer;border-left:3px solid var(--teal)">
+              <span>👥</span><div style="flex:1"><div style="font-size:13px;font-weight:500"># General</div></div><span class="nav-badge">2</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;">
+              <span>🩺</span><div style="flex:1"><div style="font-size:13px"># Clínica</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;">
+              <span>💰</span><div style="flex:1"><div style="font-size:13px"># Facturación</div></div><span class="nav-badge">1</span>
+            </div>
+          </div>
+          <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin:16px 0 12px;color:var(--mid)">Mensajes directos</div>
+          <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;">
+            <div class="dr-avatar" style="width:32px;height:32px;font-size:12px">AL</div>
+            <div style="flex:1"><div style="font-size:13px">Dra. Ana López</div><div style="font-size:11px;color:var(--mid)">En línea</div></div>
+            <div class="dr-status"></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;">
+            <div class="dr-avatar" style="width:32px;height:32px;font-size:12px;background:linear-gradient(135deg,var(--accent),var(--accent2))">RC</div>
+            <div style="flex:1"><div style="font-size:13px">Recepción</div><div style="font-size:11px;color:var(--mid)">Fuera de línea</div></div>
+          </div>
+        </div>
+        <div class="card" style="display:flex;flex-direction:column">
+          <div style="font-weight:600;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--soft)"># General — 3 miembros</div>
+          <div class="chat-list" style="flex:1">
+            <div class="chat-msg">
+              <div class="user-avatar" style="width:32px;height:32px;font-size:11px;flex-shrink:0">AL</div>
+              <div><div class="chat-bubble">Buenos días 👋 El paciente Fernández llegó temprano, está en sala de espera.</div><div class="chat-time">8:15 AM</div></div>
+            </div>
+            <div class="chat-msg own">
+              <div class="user-avatar" style="width:32px;height:32px;font-size:11px;flex-shrink:0">DR</div>
+              <div><div class="chat-bubble">Gracias! Lo atiendo en 10 minutos. ¿Tiene sus radiografías?</div><div class="chat-time">8:18 AM</div></div>
+            </div>
+            <div class="chat-msg">
+              <div class="user-avatar" style="width:32px;height:32px;font-size:11px;flex-shrink:0;background:linear-gradient(135deg,var(--accent),var(--accent2))">RC</div>
+              <div><div class="chat-bubble">Sí, las radiografías están listas y en su expediente digital.</div><div class="chat-time">8:20 AM</div></div>
+            </div>
+            <div class="chat-msg own">
+              <div class="user-avatar" style="width:32px;height:32px;font-size:11px;flex-shrink:0">DR</div>
+              <div><div class="chat-bubble">Perfecto. Recuerden confirmar las citas de la tarde por WhatsApp.</div><div class="chat-time">8:22 AM</div></div>
+            </div>
+          </div>
+          <div class="chat-input-row">
+            <input type="text" class="chat-input" placeholder="Escribe un mensaje..." id="chat-input">
+            <button class="btn btn-primary" onclick="sendChat()">Enviar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PORTAL ===== -->
+    <div id="page-portal" class="page">
+      <div class="section-header">
+        <div><div class="section-title">Portal del Paciente</div><div class="section-subtitle">Vista previa — como lo ve el paciente</div></div>
+        <div style="background:#fff3cd;padding:8px 16px;border-radius:10px;font-size:12px;color:#856404">👁 Vista de demostración — acceso real vía app.yourdentis.com</div>
+      </div>
+      <div style="max-width:540px;margin:0 auto">
+        <div class="portal-header">
+          <div style="font-size:12px;opacity:0.7;margin-bottom:4px">Bienvenida de vuelta,</div>
+          <div style="font-family:Fraunces,serif;font-size:28px;font-weight:700">María González 👋</div>
+          <div style="opacity:0.8;margin-top:8px;font-size:14px">Tu próxima cita es el 20 de febrero a las 9:00 AM</div>
+          <button class="btn" style="background:rgba(255,255,255,0.2);color:white;margin-top:12px;font-size:13px">Ver detalles de la cita →</button>
+        </div>
+        <div class="grid-2" style="margin-bottom:16px">
+          <div class="card" style="text-align:center;cursor:pointer">
+            <div style="font-size:32px">📅</div>
+            <div style="font-weight:600;margin-top:8px">Mis citas</div>
+            <div style="font-size:12px;color:var(--mid)">1 próxima</div>
+          </div>
+          <div class="card" style="text-align:center;cursor:pointer">
+            <div style="font-size:32px">💳</div>
+            <div style="font-weight:600;margin-top:8px">Mis pagos</div>
+            <div style="font-size:12px;color:var(--mid)">$0 pendiente</div>
+          </div>
+          <div class="card" style="text-align:center;cursor:pointer">
+            <div style="font-size:32px">🦷</div>
+            <div style="font-weight:600;margin-top:8px">Mi odontograma</div>
+            <div style="font-size:12px;color:var(--mid)">Ver estado dental</div>
+          </div>
+          <div class="card" style="text-align:center;cursor:pointer">
+            <div style="font-size:32px">📋</div>
+            <div style="font-weight:600;margin-top:8px">Mis tratamientos</div>
+            <div style="font-size:12px;color:var(--mid)">2 activos</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">📋 Últimas visitas</div>
+          <div class="timeline">
+            <div class="timeline-item"><div class="timeline-date">17 Feb 2026</div><div class="timeline-content"><div class="timeline-title">Blanqueamiento dental — sesión 2</div>Tratamiento completado exitosamente.</div></div>
+            <div class="timeline-item"><div class="timeline-date">20 Ene 2026</div><div class="timeline-content"><div class="timeline-title">Limpieza profunda</div>Control periodontal realizado.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== TRATAMIENTOS ===== -->
+    <div id="page-tratamientos" class="page">
+      <div class="section-header">
+        <div><div class="section-title">Tratamientos</div><div class="section-subtitle">Catálogo y gestión de tratamientos</div></div>
+        <button class="btn btn-primary">+ Nuevo Tratamiento</button>
+      </div>
+      <div class="card">
+        <table>
+          <thead><tr><th>Tratamiento</th><th>Categoría</th><th>Precio base</th><th>Duración</th><th>Activo</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Limpieza dental</strong></td><td><span class="badge badge-teal">Preventivo</span></td><td>$1,200</td><td>60 min</td><td>✅</td></tr>
+            <tr><td><strong>Blanqueamiento dental</strong></td><td><span class="badge badge-info">Estético</span></td><td>$3,500</td><td>90 min</td><td>✅</td></tr>
+            <tr><td><strong>Obturación / Resina</strong></td><td><span class="badge badge-warning">Restaurador</span></td><td>$800–$1,500</td><td>60 min</td><td>✅</td></tr>
+            <tr><td><strong>Endodoncia</strong></td><td><span class="badge badge-danger">Especialidad</span></td><td>$4,500</td><td>120 min</td><td>✅</td></tr>
+            <tr><td><strong>Extracción simple</strong></td><td><span class="badge badge-warning">Cirugía</span></td><td>$1,800</td><td>45 min</td><td>✅</td></tr>
+            <tr><td><strong>Ortodoncia completa</strong></td><td><span class="badge badge-info">Ortodoncia</span></td><td>$48,000</td><td>18 meses</td><td>✅</td></tr>
+            <tr><td><strong>Corona porcelana</strong></td><td><span class="badge badge-teal">Prótesis</span></td><td>$8,500</td><td>2 sesiones</td><td>✅</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ===== CONFIGURACION ===== -->
+    <div id="page-configuracion" class="page">
+      <div class="section-header">
+        <div><div class="section-title">Configuración</div><div class="section-subtitle">Ajustes del sistema</div></div>
+        <button class="btn btn-primary">💾 Guardar cambios</button>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">🏥 Datos de la clínica</div>
+          <div class="form-group"><label class="form-label">Nombre de la clínica</label><input class="form-control" value="YourDentis Clínica Dental"></div>
+          <div class="form-group"><label class="form-label">Dirección</label><input class="form-control" value="Av. Winston Churchill 123, Santo Domingo"></div>
+          <div class="form-group"><label class="form-label">Teléfono</label><input class="form-control" value="(809) 555-0100"></div>
+          <div class="form-group"><label class="form-label">Email</label><input class="form-control" value="contacto@yourdentis.com"></div>
+          <div class="form-group"><label class="form-label">Sitio web</label><input class="form-control" value="www.yourdentis.com"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">🔔 Notificaciones automáticas</div>
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--bg);border-radius:10px">
+              <div><div style="font-size:13px;font-weight:500">Recordatorio de cita (24h antes)</div><div style="font-size:11px;color:var(--mid)">SMS + WhatsApp + Email</div></div>
+              <div style="width:44px;height:24px;background:var(--teal);border-radius:12px;cursor:pointer;position:relative"><div style="position:absolute;right:3px;top:3px;width:18px;height:18px;background:white;border-radius:50%"></div></div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--bg);border-radius:10px">
+              <div><div style="font-size:13px;font-weight:500">Recordatorio de pago vencido</div><div style="font-size:11px;color:var(--mid)">WhatsApp automático</div></div>
+              <div style="width:44px;height:24px;background:var(--teal);border-radius:12px;cursor:pointer;position:relative"><div style="position:absolute;right:3px;top:3px;width:18px;height:18px;background:white;border-radius:50%"></div></div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--bg);border-radius:10px">
+              <div><div style="font-size:13px;font-weight:500">Encuesta post-consulta</div><div style="font-size:11px;color:var(--mid)">Email automático 2h después</div></div>
+              <div style="width:44px;height:24px;background:var(--soft);border-radius:12px;cursor:pointer;position:relative"><div style="position:absolute;left:3px;top:3px;width:18px;height:18px;background:white;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,0.2)"></div></div>
+            </div>
+          </div>
+          <div class="card-title" style="margin-top:20px">👥 Usuarios y roles</div>
+          <div class="dr-card"><div class="dr-avatar">JR</div><div class="dr-info"><div class="dr-name">Dr. Juan Ramírez</div><div class="dr-specialty">Administrador</div></div><button class="btn btn-outline btn-sm">Editar</button></div>
+          <div class="dr-card"><div class="dr-avatar">AL</div><div class="dr-info"><div class="dr-name">Dra. Ana López</div><div class="dr-specialty">Odontólogo</div></div><button class="btn btn-outline btn-sm">Editar</button></div>
+          <div class="dr-card"><div class="dr-avatar" style="background:linear-gradient(135deg,var(--accent),var(--accent2))">RC</div><div class="dr-info"><div class="dr-name">María Recepción</div><div class="dr-specialty">Recepcionista</div></div><button class="btn btn-outline btn-sm">Editar</button></div>
+          <button class="btn btn-outline btn-sm" style="width:100%;margin-top:8px">+ Añadir usuario</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- ===== MODALES ===== -->
+<!-- Modal: Nueva Cita -->
+<div class="modal-overlay" id="modal-nueva-cita">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">📅 Nueva Cita</div>
+      <button class="modal-close" onclick="closeModal('modal-nueva-cita')">✕</button>
+    </div>
+    <div class="grid-2">
+      <div class="form-group"><label class="form-label">Paciente</label><select class="form-control"><option>Buscar paciente...</option><option>María González</option><option>Carlos Mendoza</option><option>Ana Rodríguez</option></select></div>
+      <div class="form-group"><label class="form-label">Doctor</label><select class="form-control"><option>Dr. Juan Ramírez</option><option>Dra. Ana López</option></select></div>
+      <div class="form-group"><label class="form-label">Fecha</label><input type="date" class="form-control" value="2026-02-17"></div>
+      <div class="form-group"><label class="form-label">Hora</label><input type="time" class="form-control" value="09:00"></div>
+      <div class="form-group"><label class="form-label">Tratamiento</label><select class="form-control"><option>Seleccionar...</option><option>Limpieza dental</option><option>Blanqueamiento</option><option>Revisión general</option><option>Ortodoncia</option><option>Endodoncia</option><option>Extracción</option></select></div>
+      <div class="form-group"><label class="form-label">Sala / Operatorio</label><select class="form-control"><option>Sala 1</option><option>Sala 2</option><option>Sala 3</option></select></div>
+    </div>
+    <div class="form-group"><label class="form-label">Notas</label><textarea class="form-control" style="height:80px;resize:none" placeholder="Notas adicionales para esta cita..."></textarea></div>
+    <div style="padding:12px;background:rgba(10,147,150,0.06);border-radius:10px;font-size:12px;margin-bottom:4px">
+      ✅ Se enviará recordatorio automático por SMS y email al paciente 24h antes de la cita.
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-nueva-cita')">Cancelar</button>
+      <button class="btn btn-primary" onclick="closeModal('modal-nueva-cita')">✅ Agendar cita</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Nuevo Paciente -->
+<div class="modal-overlay" id="modal-nuevo-paciente">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">👤 Nuevo Paciente</div>
+      <button class="modal-close" onclick="closeModal('modal-nuevo-paciente')">✕</button>
+    </div>
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab(this,'pt1')">Datos personales</button>
+      <button class="tab" onclick="switchTab(this,'pt2')">Historial médico</button>
+    </div>
+    <div id="pt1" class="tab-content active">
+      <div class="grid-2">
+        <div class="form-group"><label class="form-label">Nombre</label><input class="form-control" placeholder="Nombre completo"></div>
+        <div class="form-group"><label class="form-label">Cédula / DNI</label><input class="form-control" placeholder="000-0000000-0"></div>
+        <div class="form-group"><label class="form-label">Fecha de nacimiento</label><input type="date" class="form-control"></div>
+        <div class="form-group"><label class="form-label">Género</label><select class="form-control"><option>Femenino</option><option>Masculino</option><option>Otro</option></select></div>
+        <div class="form-group"><label class="form-label">Teléfono</label><input class="form-control" placeholder="(809) 000-0000"></div>
+        <div class="form-group"><label class="form-label">Email</label><input class="form-control" placeholder="correo@ejemplo.com"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Dirección</label><input class="form-control" placeholder="Dirección completa"></div>
+    </div>
+    <div id="pt2" class="tab-content">
+      <div class="grid-2">
+        <div class="form-group"><label class="form-label">Tipo de sangre</label><select class="form-control"><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>O+</option><option>O-</option><option>AB+</option><option>AB-</option></select></div>
+        <div class="form-group"><label class="form-label">Alergias</label><input class="form-control" placeholder="Penicilina, Látex..."></div>
+      </div>
+      <div class="form-group"><label class="form-label">Enfermedades crónicas</label><textarea class="form-control" style="height:80px;resize:none" placeholder="Diabetes, hipertensión..."></textarea></div>
+      <div class="form-group"><label class="form-label">Medicamentos actuales</label><textarea class="form-control" style="height:80px;resize:none" placeholder="Lista de medicamentos..."></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-nuevo-paciente')">Cancelar</button>
+      <button class="btn btn-primary" onclick="closeModal('modal-nuevo-paciente')">💾 Registrar paciente</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Diente -->
+<div class="modal-overlay" id="modal-diente">
+  <div class="modal" style="max-width:400px">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-diente-title">🦷 Diente #11</div>
+      <button class="modal-close" onclick="closeModal('modal-diente')">✕</button>
+    </div>
+    <div class="form-group"><label class="form-label">Estado clínico</label>
+      <select class="form-control" id="tooth-state-select">
+        <option value="healthy">Sano</option>
+        <option value="caries">Caries</option>
+        <option value="treated">Tratado / Obturado</option>
+        <option value="absent">Ausente / Extraído</option>
+        <option value="crown">Corona</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Notas clínicas</label><textarea class="form-control" style="height:80px;resize:none" placeholder="Observaciones específicas de este diente..."></textarea></div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-diente')">Cancelar</button>
+      <button class="btn btn-primary" onclick="applyToothState()">💾 Guardar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== NAVIGATION =====
+const pageTitles = {
+  dashboard: 'Dashboard', pacientes: 'Pacientes', agenda: 'Agenda y Citas',
+  dental: 'Diagrama Dental', historial: 'Historia Clínica', tratamientos: 'Tratamientos',
+  facturacion: 'Facturación', pagos: 'Pagos & Cuotas', reportes: 'Reportes',
+  chat: 'Chat Interno', portal: 'Portal del Paciente', configuracion: 'Configuración'
+};
+
+function navigate(page, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const target = document.getElementById('page-' + page);
+  if (target) target.classList.add('active');
+  if (el) el.classList.add('active');
+  document.getElementById('page-title').textContent = pageTitles[page] || page;
+}
+
+// ===== MODAL =====
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', e => { if(e.target === o) o.classList.remove('open'); });
+});
+
+// ===== TABS =====
+function switchTab(btn, tabId) {
+  const parent = btn.closest('.card, .modal, .page');
+  parent.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  parent.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  const tc = document.getElementById(tabId);
+  if(tc) tc.classList.add('active');
+}
+
+// ===== DENTAL CHART =====
+const upperNums = [18,17,16,15,14,13,12,11,21,22,23,24,25,26,27,28];
+const lowerNums = [48,47,46,45,44,43,42,41,31,32,33,34,35,36,37,38];
+const toothStates = {};
+const defaultStates = {16:'caries', 22:'treated', 38:'absent', 15:'crown', 36:'treated'};
+
+const toothShapes = `<svg viewBox="0 0 20 24" fill="none"><path d="M10 2C8 2 6 3 5 5C4 7 4 9 5 11C6 13 7 14 8 17C8.5 19 9 21 10 22C11 21 11.5 19 12 17C13 14 14 13 15 11C16 9 16 7 15 5C14 3 12 2 10 2Z" fill="currentColor" stroke="none"/></svg>`;
+
+function renderTeeth(containerId, nums) {
+  const c = document.getElementById(containerId);
+  c.innerHTML = '';
+  nums.forEach(n => {
+    const state = toothStates[n] || defaultStates[n] || 'healthy';
+    const d = document.createElement('div');
+    d.className = 'tooth ' + state;
+    d.innerHTML = toothShapes + `<span class="tooth-num">${n}</span>`;
+    d.style.color = state === 'healthy' ? '#a8d5a2' : state === 'caries' ? '#f0ad4e' : state === 'treated' ? '#5bc0de' : state === 'absent' ? '#d9534f' : '#9c27b0';
+    d.title = `Diente #${n}`;
+    d.onclick = () => openToothModal(n);
+    c.appendChild(d);
+  });
+}
+
+let selectedTooth = null;
+function openToothModal(num) {
+  selectedTooth = num;
+  document.getElementById('modal-diente-title').textContent = `🦷 Diente #${num}`;
+  const state = toothStates[num] || defaultStates[num] || 'healthy';
+  document.getElementById('tooth-state-select').value = state;
+  openModal('modal-diente');
+}
+
+function applyToothState() {
+  if(!selectedTooth) return;
+  toothStates[selectedTooth] = document.getElementById('tooth-state-select').value;
+  renderTeeth('upper-teeth', upperNums);
+  renderTeeth('lower-teeth', lowerNums);
+  closeModal('modal-diente');
+}
+
+renderTeeth('upper-teeth', upperNums);
+renderTeeth('lower-teeth', lowerNums);
+
+// ===== CHAT =====
+function sendChat() {
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+  if(!msg) return;
+  const list = document.querySelector('.chat-list');
+  const div = document.createElement('div');
+  div.className = 'chat-msg own';
+  div.innerHTML = `<div class="user-avatar" style="width:32px;height:32px;font-size:11px;flex-shrink:0">DR</div><div><div class="chat-bubble">${msg}</div><div class="chat-time">Ahora</div></div>`;
+  list.appendChild(div);
+  list.scrollTop = list.scrollHeight;
+  input.value = '';
+}
+document.getElementById('chat-input').addEventListener('keypress', e => { if(e.key==='Enter') sendChat(); });
+</script>
+</body>
+</html>
